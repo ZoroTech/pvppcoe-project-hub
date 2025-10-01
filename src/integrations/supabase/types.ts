@@ -14,7 +14,125 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string | null
+          description: string
+          domain: string | null
+          feedback: string | null
+          id: string
+          similarity_score: number | null
+          status: Database["public"]["Enums"]["project_status"]
+          student_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          domain?: string | null
+          feedback?: string | null
+          id?: string
+          similarity_score?: number | null
+          status?: Database["public"]["Enums"]["project_status"]
+          student_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          domain?: string | null
+          feedback?: string | null
+          id?: string
+          similarity_score?: number | null
+          status?: Database["public"]["Enums"]["project_status"]
+          student_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          created_at: string | null
+          id: string
+          semester: string
+          teacher_id: string | null
+          team_leader_name: string
+          team_members: string[]
+          user_id: string
+          year_of_study: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          semester: string
+          teacher_id?: string | null
+          team_leader_name: string
+          team_members?: string[]
+          user_id: string
+          year_of_study: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          semester?: string
+          teacher_id?: string | null
+          team_leader_name?: string
+          team_members?: string[]
+          user_id?: string
+          year_of_study?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +141,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      project_status: "pending" | "approved" | "declined"
+      user_role: "student" | "teacher" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +269,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      project_status: ["pending", "approved", "declined"],
+      user_role: ["student", "teacher", "admin"],
+    },
   },
 } as const
